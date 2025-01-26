@@ -71,6 +71,12 @@
         white-space: pre-wrap;
         height: 6rem;
     }
+
+    .three-list {
+        display:grid;
+        grid-template-columns:1fr 1fr 1fr;
+        gap: 10px;
+    }
     </style>
 </head>
 <body>
@@ -98,6 +104,7 @@
 
         <label for="duration">Duration:</label>
         <input id="duration" type="text" placeholder="How long should the events of the story last for? (e.g., 3 hours)">
+        <div class="three-list"><button id="randomizeShort">Minutes</button><button id="randomizeMedium">Hours</button><button id="randomizeLong">Days</button></div>
 
         <label for="end">Ending:</label>
         <textarea id="end" rows="3" placeholder="What happens at the end of the story?"></textarea>
@@ -157,6 +164,41 @@
 
             const randomTime = getRandomTime();
             document.getElementById('time').value = randomTime;
+        });
+
+        function getRandomDuration(frame) {
+            let duration;
+            switch(frame) {
+                case "minutes":
+                    duration = (Math.floor((Math.random()) * 10) + 1) * 5 + " minutes";
+                    break;
+                case "hours":
+                    duration = Math.floor((Math.random()) * 12) + 1 + " hours";
+                    break;
+                case "days": 
+                    duration = Math.floor((Math.random()) * 7) + 1 + " days";
+                    break;
+                default:
+                    duration = "some time";
+            }
+            if(duration.substring(0, 2) === "1 ")
+                duration = duration.slice(0, -1);
+            return duration;
+        }
+
+        document.getElementById('randomizeShort').addEventListener('click', function() {
+            const randomDuration = getRandomDuration("minutes");
+            document.getElementById('duration').value = randomDuration;
+        });
+
+        document.getElementById('randomizeMedium').addEventListener('click', function() {
+            const randomDuration = getRandomDuration("hours");
+            document.getElementById('duration').value = randomDuration;
+        });
+
+        document.getElementById('randomizeLong').addEventListener('click', function() {
+            const randomDuration = getRandomDuration("days");
+            document.getElementById('duration').value = randomDuration;
         });
 
         function firstLetterIsUpperCase(str) {
