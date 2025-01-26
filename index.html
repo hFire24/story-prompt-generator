@@ -119,6 +119,8 @@
         <button id="generate">Generate Prompt</button>
 
         <textarea class="output" id="output"></textarea>
+        <button id="copy">Copy Prompt</button>
+        <button id="clear">Clear Fields</button>
     </div>
 
     <script src="characters.js"></script>
@@ -143,7 +145,8 @@
                 let randomPlace = places[Math.floor(Math.random() * places.length)];
                 document.getElementById('where').value = randomPlace;
             } else {
-                document.getElementById('where').value = `Character ${randomChoice}'s place`;
+                const variables = ['X', 'Y', 'Z']
+                document.getElementById('where').value = `${variables[randomChoice - 1]}'s place`;
             }
         });
 
@@ -177,10 +180,10 @@
                     duration = (Math.floor((Math.random()) * 10) + 1) * 5 + " minutes";
                     break;
                 case "hours":
-                    duration = Math.floor((Math.random()) * 12) + 1 + " hours";
+                    duration = (Math.floor((Math.random()) * 24) + 12) * 5 + " minutes";
                     break;
                 case "days": 
-                    duration = Math.floor((Math.random()) * 7) + 1 + " days";
+                    duration = Math.floor((Math.random()) * 1) + 1 + " days";
                     break;
                 default:
                     duration = "some time";
@@ -250,6 +253,32 @@
             }
         }
 
+        function convertToHoursAndMinutes(duration) {
+            // Match the duration format (e.g., "75 minutes" or "90 minutes")
+            const durationMatch = duration.match(/(\d+)\s?minutes/i);
+
+            if (!durationMatch) {
+                return duration; // Return original duration if it's not in minutes
+            }
+
+            const totalMinutes = parseInt(durationMatch[1], 10);
+
+            if (totalMinutes < 60) {
+                return `${totalMinutes} minutes`; // Less than an hour
+            }
+
+            // Convert to hours and remaining minutes
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+
+            // Build the output string
+            if (minutes === 0) {
+                return `${hours} ${hours === 1 ? "hour" : "hours"}`; // No minutes left
+            } else {
+                return `${hours} ${hours === 1 ? "hour" : "hours"} and ${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
+            }
+        }
+
         document.getElementById('generate').addEventListener('click', function() {
             let what = document.getElementById('what').value.trim();
             let who = document.getElementById('who').value.trim();
@@ -286,9 +315,14 @@
             what = replacePlaceholder(what, 'X', fullNames[0], shortNames[0]);
             what = replacePlaceholder(what, 'Y', fullNames[1], shortNames[1]);
             what = replacePlaceholder(what, 'Z', fullNames[2], shortNames[2]);
+            where = replacePlaceholder(where, 'X', shortNames[0]);
+            where = replacePlaceholder(where, 'Y', shortNames[1]);
+            where = replacePlaceholder(where, 'Z', shortNames[2]);
             
             // Calculate the end time
             let endTime = getEndTime(time, duration);
+
+            duration = convertToHoursAndMinutes(duration);
 
             let preposition = firstLetterIsUpperCase(date) ? 'on' : 'in';
             let prompt = `${what}.\nLocation: ${where}\nTime: ${date}, ${time} for ${duration}.\nEnding: ${ending}. The story/chapter ends at ${endTime}`;
@@ -301,7 +335,38 @@
                 prompt += promptExt;
             }
             
+            document.getElementById('output').textContent = '';
             document.getElementById('output').textContent = prompt;
+            console.log("New prompt is made!\n" + prompt);
+        });
+
+        // Copy Prompt Button
+        document.getElementById('copy').addEventListener('click', function () {
+            const output = document.getElementById('output').textContent;
+
+            if (output.trim() === '') {
+                alert('There is no prompt to copy.');
+                return;
+            }
+
+            navigator.clipboard.writeText(output).then(() => {
+                alert('Prompt copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy prompt: ', err);
+            });
+        });
+
+        // Clear Fields Button
+        document.getElementById('clear').addEventListener('click', function () {
+            document.getElementById('what').value = '';
+            document.getElementById('who').value = '';
+            document.getElementById('where').value = '';
+            document.getElementById('date').value = '';
+            document.getElementById('time').value = '';
+            document.getElementById('duration').value = '';
+            document.getElementById('end').value = '';
+            document.getElementById('output').textContent = '';
+            alert('All fields have been cleared!');
         });
     </script>
 </body>
