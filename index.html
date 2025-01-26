@@ -252,20 +252,45 @@
 
         document.getElementById('generate').addEventListener('click', function() {
             let what = document.getElementById('what').value.trim();
+            let who = document.getElementById('who').value.trim();
             let where = document.getElementById('where').value.trim();
             let date = document.getElementById('date').value.trim();
             let time = document.getElementById('time').value.trim();
             let duration = document.getElementById('duration').value.trim();
             let ending = document.getElementById('end').value.trim();
 
-            if (!what || !where || !date || !time || !duration) {
+            if (!what || !who || !where || !date || !time || !duration) {
                 alert('Please fill out all fields.');
                 return;
             }
 
-            let preposition = firstLetterIsUpperCase(date) ? 'on' : 'in';
+            // Split characters and ensure at least 3 names
+            let characters = who.split(',').map(name => name.trim());
+            while(characters.length < 3) {
+                characters.push(''); // Fill missing characters with empty strings
+            }
+            
+            // Define full and short names
+            let fullNames = characters;
+            let shortNames = characters.map(name => name.split(' ')[0]); // Use the first word as short form
+            
+            // Replace X, Y, Z with full names for the first instance, then short names for subsequent mentions
+            const replacePlaceholder = (text, placeholder, fullName, shortName) => {
+                let count = 0;
+                return text.replace(new RegExp(`\\b${placeholder}\\b`, 'g'), match => {
+                    count++;
+                    return count === 1 ? fullName : shortName;
+                });
+            };
+
+            what = replacePlaceholder(what, 'X', fullNames[0], shortNames[0]);
+            what = replacePlaceholder(what, 'Y', fullNames[1], shortNames[1]);
+            what = replacePlaceholder(what, 'Z', fullNames[2], shortNames[2]);
+            
+            // Calculate the end time
             let endTime = getEndTime(time, duration);
 
+            let preposition = firstLetterIsUpperCase(date) ? 'on' : 'in';
             let prompt = `${what}.\nLocation: ${where}\nTime: ${date}, ${time} for ${duration}.\nEnding: ${ending}. The story/chapter ends at ${endTime}`;
             prompt = prompt.replaceAll('..','.');
 
