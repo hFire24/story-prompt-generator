@@ -34,7 +34,7 @@
     }
 
     textarea, input {
-        width: 578px;
+        width: calc(100% - 22px);
         margin-top: 5px;
         padding: 10px;
         border: 1px solid #444; /* Darker border */
@@ -43,6 +43,10 @@
         border-radius: 4px;
         resize: none;
         font-family: Arial, Helvetica, sans-serif;
+    }
+
+    textarea {
+        resize:vertical;
     }
 
     button {
@@ -207,6 +211,45 @@
             return firstChar === firstChar.toUpperCase() && firstChar !== firstChar.toLowerCase();
         }
 
+        function getEndTime(time, duration) {
+            try {
+                const timeParts = time.match(/(\d+):(\d+)\s?(AM|PM)/i);
+                const durationParts = duration.match(/(\d+)\s?(minutes?|hours?|days?)/i);
+
+                if (!timeParts || !durationParts) {
+                    return "some time";
+                }
+
+                let [_, hours, minutes, period] = timeParts;
+                let [__, durationValue, durationUnit] = durationParts;
+
+                hours = parseInt(hours, 10) % 12; // Convert to 12-hour format
+                if (period.toUpperCase() === "PM") hours += 12;
+
+                minutes = parseInt(minutes, 10);
+                durationValue = parseInt(durationValue, 10);
+
+                if (durationUnit.startsWith("minute")) {
+                    minutes += durationValue;
+                } else if (durationUnit.startsWith("hour")) {
+                    hours += durationValue;
+                } else if (durationUnit.startsWith("day")) {
+                    hours += durationValue * 24;
+                }
+
+                // Adjust hours and minutes for overflow
+                hours += Math.floor(minutes / 60);
+                minutes = minutes % 60;
+
+                const endPeriod = hours >= 12 && hours < 24 ? "PM" : "AM";
+                hours = hours % 12 || 12; // Convert back to 12-hour format
+
+                return `${hours}:${minutes.toString().padStart(2, "0")} ${endPeriod}`;
+            } catch {
+                return "some time";
+            }
+        }
+
         document.getElementById('generate').addEventListener('click', function() {
             let what = document.getElementById('what').value.trim();
             let where = document.getElementById('where').value.trim();
@@ -221,8 +264,9 @@
             }
 
             let preposition = firstLetterIsUpperCase(date) ? 'on' : 'in';
+            let endTime = getEndTime(time, duration);
 
-            let prompt = `${what}.\nLocation: ${where}\nTime: ${date} at ${time} for ${duration}.\nEnding: ${ending}.`;
+            let prompt = `${what}.\nLocation: ${where}\nTime: ${date}, ${time} for ${duration}.\nEnding: ${ending}. The story/chapter ends at ${endTime}`;
             prompt = prompt.replaceAll('..','.');
 
             if(document.getElementById("ban").checked) {
