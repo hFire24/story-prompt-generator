@@ -1,7 +1,6 @@
 const characters = ['Accelerator (Toaru Series)',
   'Adam Blade',
   'Ai Hinatsuru',
-  'Ai Hoshino',
   'Akane (Music Enjoyers)',
   'Akari Akaza',
   'Akari Mizunashi',
