@@ -83,7 +83,7 @@
     }
     </style>
 </head>
-<body>
+<body onload="fillDate()">
     <div class="container">
         <h1>Story Prompt Generator</h1>
 
@@ -150,7 +150,9 @@
             }
         });
 
-        document.getElementById('selectDate').addEventListener('click', function() {
+        document.getElementById('selectDate').addEventListener('click', fillDate);
+
+        function fillDate() {
             const d = new Date();
             const monthNames = [
                 "January", "February", "March", "April", "May", "June",
@@ -158,7 +160,7 @@
             ];
             const fullMonth = monthNames[d.getMonth()];
             document.getElementById('date').value = fullMonth;
-        })
+        }
 
         document.getElementById('randomizeTime').addEventListener('click', function() {
             function getRandomTime() {
@@ -217,7 +219,7 @@
         function getEndTime(time, duration) {
             try {
                 const timeParts = time.match(/(\d+):(\d+)\s?(AM|PM)/i);
-                const durationParts = duration.match(/(\d+)\s?(minutes?|hours?|days?)/i);
+                const durationParts = duration.toLowerCase().match(/(\d+)\s?(minutes?|hours?|days?)/i);
 
                 if (!timeParts || !durationParts) {
                     return "some time";
@@ -288,7 +290,7 @@
             let duration = document.getElementById('duration').value.trim();
             let ending = document.getElementById('end').value.trim();
 
-            if (!what || !who || !where || !date || !time || !duration) {
+            if (!what || !where || !date || !time || !duration) {
                 alert('Please fill out all fields.');
                 return;
             }
