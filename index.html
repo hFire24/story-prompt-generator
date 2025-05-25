@@ -15,7 +15,8 @@
 
         <label for="who">Main Characters:</label>
         <textarea id="who" rows="2" placeholder="Enter the characters..."></textarea>
-        <div class='two-buttons'><button id="randomize">Randomize Character</button> <button id='advanced' class="red">Random Character Generator</button></div>
+        <div class='two-buttons'><button id="randomize" class="pink">Randomize Character (List 1)</button> <button id="randomize2">Randomize Character (List 2)</button></div>
+        <button id='advanced' class="red">Go to Random Character Generator</button>
 
         <label for="where">Where:</label>
         <input id="where" type="text" placeholder="Where does the story take place?">
@@ -47,20 +48,35 @@
     </div>
 
     <script src="characters.js"></script>
+    <script src="characters2.js"></script>
     <script src="places.js"></script>
     <script>
         document.getElementById('randomize').addEventListener('click', function() {
             if (characters.length > 0) {
                 const randomChoice = Math.floor(Math.random() * characters.length);
                 const randomCharacter = characters[randomChoice];
-                let characterList = document.getElementById('who');
-                let space = "";
-                if (characterList.value !== "") space = ", ";
-                characterList.value += space + randomCharacter;
+                addCharacterToList(randomCharacter);
             } else {
                 alert('No characters available to randomize.');
             }
         });
+
+        document.getElementById('randomize2').addEventListener('click', function() {
+            if (characters2.length > 0) {
+                const randomChoice = Math.floor(Math.random() * characters2.length);
+                const randomCharacter = characters2[randomChoice];
+                addCharacterToList(randomCharacter);
+            } else {
+                alert('No characters available to randomize.');
+            }
+        });
+
+        function addCharacterToList(character) {
+            let characterList = document.getElementById('who');
+            let space = "";
+            if (characterList.value !== "") space = ", ";
+            characterList.value += space + character;
+        }
 
         document.getElementById('advanced').addEventListener('click', () => {
             const advancedWindow = window.open('characters.html', '_blank');
