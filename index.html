@@ -4,84 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Story Prompt Generator</title>
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #121212; /* Dark background */
-        color: #e0e0e0; /* Light text */
-    }
-
-    .container {
-        max-width: 600px;
-        margin: auto;
-        padding: 20px;
-        background: #1e1e1e; /* Slightly lighter dark background */
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    h1 {
-        text-align: center;
-        color: #ffffff; /* White for title text */
-    }
-
-    label {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-        color: #e0e0e0; /* Light text for labels */
-    }
-
-    textarea, input {
-        width: calc(100% - 22px);
-        margin-top: 5px;
-        padding: 10px;
-        border: 1px solid #444; /* Darker border */
-        background-color: #1e1e1e; /* Match container background */
-        color: #ffffff; /* White text */
-        border-radius: 4px;
-        resize: none;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    textarea {
-        resize:vertical;
-    }
-
-    button {
-        margin-top: 20px;
-        width: 100%;
-        padding: 10px;
-        background-color: #007BFF; /* Same blue */
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    button:hover {
-        background-color: #0056b3; /* Darker blue on hover */
-    }
-
-    .output {
-        margin-top: 20px;
-        padding: 10px;
-        background: #292929; /* Dark gray for output background */
-        color: #ffffff; /* White text */
-        border-radius: 4px;
-        white-space: pre-wrap;
-        height: 6rem;
-    }
-
-    .three-list {
-        display:grid;
-        grid-template-columns:1fr 1fr 1fr;
-        gap: 10px;
-    }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body onload="fillDate()">
     <div class="container">
@@ -92,7 +15,7 @@
 
         <label for="who">Main Characters:</label>
         <textarea id="who" rows="2" placeholder="Enter the characters..."></textarea>
-        <button id="randomize">Randomize Character</button>
+        <div class='two-buttons'><button id="randomize">Randomize Character</button> <button id='advanced' class="red">Random Character Generator</button></div>
 
         <label for="where">Where:</label>
         <input id="where" type="text" placeholder="Where does the story take place?">
@@ -104,7 +27,7 @@
 
         <label for="time">Time:</label>
         <input id="time" type="text" placeholder="What time does the story take place? (e.g., 3:00 PM)">
-        <button id="randomizeTime">Randomize Time</button>
+        <div class='two-buttons'><button id="getCurrentTime">Get current time</button><button id="randomizeTime">Randomize Time</button></div>
 
         <label for="duration">Duration:</label>
         <input id="duration" type="text" placeholder="How long should the events of the story last for? (e.g., 3 hours)">
@@ -139,6 +62,11 @@
             }
         });
 
+        document.getElementById('advanced').addEventListener('click', () => {
+            const advancedWindow = window.open('characters.html', '_blank');
+            advancedWindow.focus();
+        });
+
         document.getElementById('randomizePlace').addEventListener('click', function() {
             let randomChoice = Math.floor(Math.random() * 4);
             if (places.length > 0 && randomChoice === 0) {
@@ -161,6 +89,16 @@
             const fullMonth = monthNames[d.getMonth()];
             document.getElementById('date').value = fullMonth;
         }
+
+        document.getElementById('getCurrentTime').addEventListener('click', function() {
+            const d = new Date();
+            let hours = d.getHours();
+            const minutes = d.getMinutes();
+            const period = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12; // Convert to 12-hour format
+            const formattedMinute = minutes < 10 ? `0${minutes}` : minutes; // Ensure two digits for minutes
+            document.getElementById('time').value = `${hours}:${formattedMinute} ${period}`;
+        });
 
         document.getElementById('randomizeTime').addEventListener('click', function() {
             function getRandomTime() {

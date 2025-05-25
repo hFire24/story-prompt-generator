@@ -1,4 +1,5 @@
-const places = ['A park in Utah',
+const places = ['Music Enjoyers Club Room',
+  'A park in Utah',
   'City Creek Mall in Utah',
   'A diner in Idaho',
   'The Rocky Mountains (Utah)',

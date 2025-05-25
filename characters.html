@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Random Character Generator</h1>
+    <div>List 1 is more biased towards anime characters. List 2 has a wider variety of characters.</div>
+    <div class="two-buttons">
+      <button id="generate-btn" class="pink">Get Character (List 1)</button>
+      <button id="generate-btn-2">Get Character (List 2)</button>
+    </div>
+    <div class="two-buttons">
+      <button id="remove-btn" class="red">Remove Last Character</button>
+      <button id="clear-btn" class="red">Clear List</button>
+    </div>
+    <div style="margin-top: 30px;">
+      <label for="unique-checkbox">Prevent duplicates</label>
+      <input type="checkbox" id="unique-checkbox">
+    </div>
+    
+    <ul id="character-list"></ul>
+  </div>
+  
+  <script src="characters.js"></script>
+  <script src="characters2.js"></script>
+  <script>
+    let generatedCharacters = [];
+    const characterList = document.getElementById('character-list');
+    const generateBtn = document.getElementById('generate-btn');
+    const generateBtn2 = document.getElementById('generate-btn-2');
+    const removeBtn = document.getElementById('remove-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const uniqueCheckbox = document.getElementById('unique-checkbox');
+
+    generateBtn.addEventListener('click', () => generateRandomCharacter(characters));
+    generateBtn2.addEventListener('click', () => generateRandomCharacter(characters2));
+
+    function generateRandomCharacter(list) {
+      const preventDuplicates = uniqueCheckbox.checked;
+      let availableCharacters = list === characters ? characters : characters2;
+
+      if (preventDuplicates) {
+        const existingCharacters = Array.from(characterList.children).map(li => li.textContent);
+        availableCharacters = filterCharacters(list);
+      }
+
+      if (availableCharacters.length === 0) {
+        alert("No more unique characters available!");
+        return;
+      }
+
+      const randomIndex = Math.floor(Math.random() * availableCharacters.length);
+      const randomCharacter = availableCharacters[randomIndex];
+
+      const listItem = document.createElement('li');
+      listItem.textContent = randomCharacter;
+      characterList.insertBefore(listItem, characterList.firstChild);
+    }
+
+    function filterCharacters(list) {
+      return list.filter(character => !generatedCharacters.includes(character));
+    }
+
+    removeBtn.addEventListener('click', () => {
+      if (characterList.children.length === 0) {
+        alert("No characters to remove!");
+        return;
+      }
+      if (confirm("Are you sure you want to remove the last character?")) {
+        const lastItem = characterList.firstElementChild;
+        generatedCharacters = generatedCharacters.filter(character => character !== lastItem.textContent);
+        characterList.removeChild(lastItem);
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      if(confirm("Are you sure you want to clear the list?")) {
+        characterList.innerHTML = '';
+        generatedCharacters = [];
+      }
+    });
+  </script>
+</body>
+</html>
