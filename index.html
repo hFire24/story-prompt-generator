@@ -37,8 +37,8 @@
         <label for="end">Ending:</label>
         <textarea id="end" rows="3" placeholder="What happens at the end of the story?"></textarea>
 
-        <label for="ban">Ban Coffee and Tea: </label>
-        <input id="ban" type="checkbox" checked>
+        <!--label for="ban">Ban Coffee and Tea: </label>
+        <input id="ban" type="checkbox" checked-->
 
         <button id="generate">Generate Prompt</button>
 
@@ -284,12 +284,12 @@
             let prompt = `${what}.\nLocation: ${where}\nTime: ${date}, ${time} for ${duration}.\nEnding: ${ending}. The story/chapter ends at ${endTime}`;
             prompt = prompt.replaceAll('..','.');
 
-            if(document.getElementById("ban").checked) {
+            /*if(document.getElementById("ban").checked) {
                 let promptExt = "\nPlease note that ";
                 let chino = prompt.includes("Chino");
                 promptExt = "\nPlease note that " + (chino ? "while " : "") + "coffee and tea are banned" + (chino ? ", Chino is allowed to drink coffee." : ".");
                 prompt += promptExt;
-            }
+            }*/
             
             document.getElementById('output').textContent = '';
             document.getElementById('output').textContent = prompt;
