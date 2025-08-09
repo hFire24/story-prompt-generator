@@ -20,7 +20,8 @@
 
         <label for="where">Where:</label>
         <input id="where" type="text" placeholder="Where does the story take place?">
-        <button id="randomizePlace">Randomize Place</button>
+        <div class="two-buttons"><button id="randomizePlace" class="pink">Randomize Place (List 1)</button> <button id="randomizePlace2">Randomize Place (List 2)</button></div>
+        <label for="addRandomYear">Add Random Year (1991-2031)</label> <input type="checkbox" name="addRandomYear" id="addRandomYear"> 
 
         <label for="date">Date:</label>
         <input id="date" type="text" placeholder="When does the story take place? (e.g., January 23, the winter)">
@@ -50,6 +51,7 @@
     <script src="characters.js"></script>
     <script src="characters2.js"></script>
     <script src="places.js"></script>
+    <script src="places2.js"></script>
     <script>
         document.getElementById('randomize').addEventListener('click', function() {
             if (characters.length > 0) {
@@ -85,13 +87,36 @@
 
         document.getElementById('randomizePlace').addEventListener('click', function() {
             let randomChoice = Math.floor(Math.random() * 4);
+            let placeString = ''
             if (places.length > 0 && randomChoice === 0) {
                 let randomPlace = places[Math.floor(Math.random() * places.length)];
-                document.getElementById('where').value = randomPlace;
+                placeString = randomPlace;
             } else {
                 const variables = ['X', 'Y', 'Z']
-                document.getElementById('where').value = `${variables[randomChoice - 1]}'s place`;
+                placeString = `${variables[randomChoice - 1]}'s place`;
             }
+            if (document.getElementById('addRandomYear').checked) {
+                let year = Math.floor(Math.random() * 41) + 1991;
+                placeString += ` circa ${year}`;
+            }
+            document.getElementById('where').value = placeString;
+        });
+
+        document.getElementById('randomizePlace2').addEventListener('click', function() {
+            let randomChoice = Math.floor(Math.random() * places2.length);
+            let placeName = places2[randomChoice];
+            let nycIndex = places2.indexOf("New York City");
+            let placeString = '';
+            if (randomChoice >= nycIndex && nycIndex !== -1) {
+                placeString = placeName;
+            } else {
+                placeString = `The world of ${placeName}`;
+            }
+            if (document.getElementById('addRandomYear').checked) {
+                let year = Math.floor(Math.random() * 41) + 1991;
+                placeString += ` circa ${year}`;
+            }
+            document.getElementById('where').value = placeString;
         });
 
         document.getElementById('selectDate').addEventListener('click', fillDate);
